@@ -5,7 +5,14 @@ from .serializers import UserSerializer, RegisterSerializer
 from django.contrib.auth import login
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView
+from django.http import HttpResponse, HttpResponseRedirect
+from django.conf import settings
+from rest_framework.views import APIView
+import praw 
+import json
 
+# Constants
+LIMIT_QUANTITY_OF_POSTS = 20
 
 # Register API
 
@@ -30,3 +37,23 @@ class LoginAPI(LoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
+
+class RedditPostsList(APIView):
+
+    def get(self, request, subreddit, format=None):
+        reddit = praw.Reddit(
+            user_agent="app user agent",
+        )
+        responseList = []
+        for submission in reddit.subreddit(f"{subreddit}").hot(limit=LIMIT_QUANTITY_OF_POSTS):
+            submission_dict = {
+                "title": submission.title, 
+                "score": submission.score, 
+                "post_url": submission.shortlink,
+                "article_url": submission.url, 
+                "subrredit_name": submission.subreddit.display_name,
+                "img_url": submission.preview['images'][0]['source']['url'] if hasattr(submission, 'preview') and 'images' in submission.preview else ""
+            }
+            responseList.append(submission_dict)
+
+        return HttpResponse(json.dumps(responseList), content_type="application/json")

@@ -9,6 +9,8 @@ services:
             DB_PASSWORD: toor
             DB_HOST: db 
             DB_PORT: 3306
+      env_file:
+            - ./.env
       volumes:
             - .:/src 
       depends_on:

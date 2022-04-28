@@ -149,7 +149,3 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "brightnews.User"
 
-# Reddit configuration
-
-REDDIT_CLIENT_ID = os.getenv('REDDIT_CLIENT_ID')
-REDDIT_CLIENT_SECRET = os.getenv('REDDIT_CLIENT_SECRET')
