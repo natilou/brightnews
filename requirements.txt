@@ -1,4 +1,4 @@
-django == 4.0.4
+django == 4.0.6
 djangorestframework == 3.13.1
 django-rest-knox == 4.2.0
 mysqlclient == 2.1.0
